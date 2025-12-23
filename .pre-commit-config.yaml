@@ -1,0 +1,24 @@
+# .pre-commit-config.yaml
+repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    # Ruff 版本，建议和 pyproject.toml 里的保持一致，这里用 latest 即可
+    rev: v0.4.8 
+    hooks:
+      # 1. 代码检查 (Lint)
+      - id: ruff
+        args: [ --fix ] # 如果有问题，尝试自动修复
+      # 2. 代码格式化 (Format)
+      - id: ruff-format
+
+  - repo: local
+    hooks:
+      # 3. 提交前自动跑单元测试
+      - id: pytest
+        name: pytest
+        entry: uv run pytest
+        language: system
+        types: [python]
+        # 仅在 commit 时触发，push 时不重复触发
+        stages: [commit]
+        # 只要有一个测试挂了，提交就会失败
+        pass_filenames: false
